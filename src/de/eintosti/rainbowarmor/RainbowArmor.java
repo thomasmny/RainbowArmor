@@ -36,17 +36,10 @@ public class RainbowArmor extends JavaPlugin {
         this.getConfig().options().copyDefaults(true);
         this.saveConfig();
 
-        this.armorLore = this.getConfig().isString("armor_lore") ? this.getConfig().getString("armor_lore").replace("&", "§") : "§4R§ca§6i§en§ab§2o§bw";
-        this.armorEnabled = this.getConfig().isString("armor_enabled") ? this.getConfig().getString("armor_enabled").replace("&", "§") : "§7Your armor is §anow §7colourful.";
-        this.armorDisabled = this.getConfig().isString("armor_disabled") ? this.getConfig().getString("armor_disabled").replace("&", "§") : "§7Your armor is §cno longer §7colourful.";
-        this.configReloaded = this.getConfig().isString("config_reloaded") ? this.getConfig().getString("config_reloaded").replace("&", "§") : "§7The config was reloaded.";
-        this.prefix = this.getConfig().isString("prefix") ? this.getConfig().getString("prefix").replace("&", "§") : "§7● §4R§ca§6i§en§ab§2o§bw§3A§9r§5m§do§fr §8» ";
-        this.noPermission = this.getConfig().isString("no_permissions") ? this.getConfig().getString("no_permissions").replace("&", "§") : "§7No permissions!";
-        this.oneColour = !this.getConfig().isBoolean("armor_sameColour") || this.getConfig().getBoolean("armor_sameColour");
-
         initClasses();
         registerCommands();
         registerListeners();
+        loadMessages();
 
         Bukkit.getConsoleSender().sendMessage("RainbowArmor » Plugin §aenabled§r!");
     }
@@ -76,8 +69,18 @@ public class RainbowArmor extends JavaPlugin {
         new PlayerQuit(this);
     }
 
+    public void loadMessages() {
+        this.armorLore = this.getConfig().isString("armor_lore") ? this.getConfig().getString("armor_lore").replace("&", "§") : "§4R§ca§6i§en§ab§2o§bw";
+        this.armorEnabled = this.getConfig().isString("armor_enabled") ? this.getConfig().getString("armor_enabled").replace("&", "§") : "§7Your armor is §anow §7colourful.";
+        this.armorDisabled = this.getConfig().isString("armor_disabled") ? this.getConfig().getString("armor_disabled").replace("&", "§") : "§7Your armor is §cno longer §7colourful.";
+        this.configReloaded = this.getConfig().isString("config_reloaded") ? this.getConfig().getString("config_reloaded").replace("&", "§") : "§7The config was reloaded.";
+        this.prefix = this.getConfig().isString("prefix") ? this.getConfig().getString("prefix").replace("&", "§") : "§7● §4R§ca§6i§en§ab§2o§bw§3A§9r§5m§do§fr §8» ";
+        this.noPermission = this.getConfig().isString("no_permissions") ? this.getConfig().getString("no_permissions").replace("&", "§") : "§7No permissions!";
+        this.oneColour = !this.getConfig().isBoolean("armor_sameColour") || this.getConfig().getBoolean("armor_sameColour");
+    }
+
     public void sendPermissionMessage(Player player) {
-        player.sendMessage(prefix + noPermission);
+        player.sendMessage(this.prefix + this.noPermission);
     }
 
     public String getArmorLore() {
@@ -85,15 +88,15 @@ public class RainbowArmor extends JavaPlugin {
     }
 
     public String getArmorEnabled() {
-        return this.armorEnabled;
+        return this.prefix + this.armorEnabled;
     }
 
     public String getArmorDisabled() {
-        return this.armorDisabled;
+        return this.prefix + this.armorDisabled;
     }
 
     public String getConfigReloaded() {
-        return this.configReloaded;
+        return this.prefix + this.configReloaded;
     }
 
     public Boolean getOneColour() {

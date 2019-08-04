@@ -39,6 +39,7 @@ public class PlayerInteract implements Listener {
         List<String> itemLore = itemMeta.getLore();
         if (itemLore == null) {
             rainbowArmorManager.stopArmorColouring();
+            return;
         }
 
         if (!itemLore.contains(plugin.getArmorLore())) {

@@ -44,6 +44,7 @@ public class RainbowArmorCommand implements CommandExecutor {
                         return true;
                     }
                     plugin.reloadConfig();
+                    plugin.loadMessages();
                     player.sendMessage(plugin.getConfigReloaded());
                 }
                 break;
