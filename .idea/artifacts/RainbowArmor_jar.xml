@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RainbowArmor:jar">
+    <output-path>$USER_HOME$/Desktop/testServer/plugins</output-path>
+    <root id="archive" name="RainbowArmor.jar">
+      <element id="module-output" name="RainbowArmor" />
+    </root>
+  </artifact>
+</component>

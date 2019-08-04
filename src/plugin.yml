@@ -1,0 +1,16 @@
+name: RainbowArmor
+main: de.eintosti.rainbowarmor.RainbowArmor
+version: 2.0
+author: einTosti
+
+commands:
+  RainbowArmor:
+      aliases: [ra]
+      description: Wow, faaaancy!
+      usage: /<command>
+
+permissions:
+    rainbowArmor.use:
+        default: true
+    rainbowArmor.reloadConfig:
+        default: OP
