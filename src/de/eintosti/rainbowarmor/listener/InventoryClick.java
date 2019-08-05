@@ -21,7 +21,6 @@ public class InventoryClick implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-
         if (plugin.enabledPlayers.contains(player.getUniqueId())) {
             if (event.getSlotType().equals(InventoryType.SlotType.ARMOR))
                 event.setCancelled(true);

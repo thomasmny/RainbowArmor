@@ -41,10 +41,6 @@ public class PlayerInteract implements Listener {
             rainbowArmorManager.stopArmorColouring();
             return;
         }
-
-        if (!itemLore.contains(plugin.getArmorLore())) {
-            rainbowArmorManager.stopArmorColouring();
-        }
         switch (itemStack.getType()) {
             case LEATHER_HELMET:
                 if (!rainbowArmorManager.colourfulArmor[0]) {

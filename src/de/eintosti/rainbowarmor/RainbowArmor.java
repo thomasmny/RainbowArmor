@@ -1,9 +1,7 @@
 package de.eintosti.rainbowarmor;
 
 import de.eintosti.rainbowarmor.command.RainbowArmorCommand;
-import de.eintosti.rainbowarmor.listener.InventoryClick;
-import de.eintosti.rainbowarmor.listener.PlayerInteract;
-import de.eintosti.rainbowarmor.listener.PlayerQuit;
+import de.eintosti.rainbowarmor.listener.*;
 import de.eintosti.rainbowarmor.manager.RainbowArmorManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,19 +10,21 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 /**
  * @author einTosti
  */
 public class RainbowArmor extends JavaPlugin {
-    private String armorLore;
     private String armorEnabled;
     private String armorDisabled;
     private String configReloaded;
     private String prefix;
     private String noPermission;
+    private String worldDisabled;
     private Boolean oneColour;
+    private List<String> disabledWorlds;
 
     public ArrayList<UUID> enabledPlayers = new ArrayList<>();
     public HashMap<UUID, ItemStack[]> playerArmor = new HashMap<>();
@@ -39,7 +39,7 @@ public class RainbowArmor extends JavaPlugin {
         initClasses();
         registerCommands();
         registerListeners();
-        loadMessages();
+        loadConfigSettings();
 
         Bukkit.getConsoleSender().sendMessage("RainbowArmor » Plugin §aenabled§r!");
     }
@@ -65,26 +65,25 @@ public class RainbowArmor extends JavaPlugin {
 
     private void registerListeners() {
         new InventoryClick(this);
+        new PlayerChangedWorld(this);
+        new PlayerDropItem(this);
         new PlayerInteract(this);
         new PlayerQuit(this);
     }
 
-    public void loadMessages() {
-        this.armorLore = this.getConfig().isString("armor_lore") ? this.getConfig().getString("armor_lore").replace("&", "§") : "§4R§ca§6i§en§ab§2o§bw";
-        this.armorEnabled = this.getConfig().isString("armor_enabled") ? this.getConfig().getString("armor_enabled").replace("&", "§") : "§7Your armor is §anow §7colourful.";
-        this.armorDisabled = this.getConfig().isString("armor_disabled") ? this.getConfig().getString("armor_disabled").replace("&", "§") : "§7Your armor is §cno longer §7colourful.";
-        this.configReloaded = this.getConfig().isString("config_reloaded") ? this.getConfig().getString("config_reloaded").replace("&", "§") : "§7The config was reloaded.";
-        this.prefix = this.getConfig().isString("prefix") ? this.getConfig().getString("prefix").replace("&", "§") : "§7● §4R§ca§6i§en§ab§2o§bw§3A§9r§5m§do§fr §8» ";
-        this.noPermission = this.getConfig().isString("no_permissions") ? this.getConfig().getString("no_permissions").replace("&", "§") : "§7No permissions!";
-        this.oneColour = !this.getConfig().isBoolean("armor_sameColour") || this.getConfig().getBoolean("armor_sameColour");
+    public void loadConfigSettings() {
+        this.armorEnabled = this.getConfig().isString("messages.armor_enabled") ? this.getConfig().getString("messages.armor_enabled").replace("&", "§") : "§7Your armor is §anow §7colourful.";
+        this.armorDisabled = this.getConfig().isString("messages.armor_disabled") ? this.getConfig().getString("messages.armor_disabled").replace("&", "§") : "§7Your armor is §cno longer §7colourful.";
+        this.configReloaded = this.getConfig().isString("messages.config_reloaded") ? this.getConfig().getString("messages.config_reloaded").replace("&", "§") : "§7The config was reloaded.";
+        this.prefix = this.getConfig().isString("messages.prefix") ? this.getConfig().getString("messages.prefix").replace("&", "§") : "§7● §4R§ca§6i§en§ab§2o§bw§3A§9r§5m§do§fr §8» ";
+        this.noPermission = this.getConfig().isString("messages.no_permissions") ? this.getConfig().getString("messages.no_permissions").replace("&", "§") : "§7No permissions!";
+        this.worldDisabled = this.getConfig().isString("messages.world_disabled") ? this.getConfig().getString("messages.world_disabled").replace("&", "§") : "§cCommand disabled in this world.";
+        this.oneColour = !this.getConfig().isBoolean("messages.armor_sameColour") || this.getConfig().getBoolean("messages.armor_sameColour");
+        this.disabledWorlds = this.getConfig().isList("disabled_worlds") ? this.getConfig().getStringList("disabled_worlds") : new ArrayList<>();
     }
 
     public void sendPermissionMessage(Player player) {
         player.sendMessage(this.prefix + this.noPermission);
-    }
-
-    public String getArmorLore() {
-        return this.armorLore;
     }
 
     public String getArmorEnabled() {
@@ -99,8 +98,16 @@ public class RainbowArmor extends JavaPlugin {
         return this.prefix + this.configReloaded;
     }
 
+    public String getWorldDisabled() {
+        return this.prefix + this.worldDisabled;
+    }
+
     public Boolean getOneColour() {
         return this.oneColour;
+    }
+
+    public List<String> getDisabledWorlds() {
+        return disabledWorlds;
     }
 
     public RainbowArmorManager getRainbowArmorManager() {

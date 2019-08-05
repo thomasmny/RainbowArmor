@@ -4,10 +4,14 @@
 #                Config File                #
 # ###########################################
 #
-prefix: '&7● &4R&ca&6i&en&ab&2o&bw&3A&9r&5m&do&fr &8» '
-no_permissions: '&7No permissions!'
-config_reloaded: '&7The config was reloaded.'
-armor_enabled: '&7Your armor is &anow &7colourful.'
-armor_disabled: '&7Your armor is &cno longer &7colourful.'
-armor_lore: "&4R&ca&6i&en&ab&2o&bw"
-armor_sameColour: true
+
+messages:
+    prefix: '&7● &4R&ca&6i&en&ab&2o&bw&3A&9r&5m&do&fr &8» '
+    no_permissions: '&7No permissions!'
+    config_reloaded: '&7The config was reloaded.'
+    armor_enabled: '&7Your armor is &anow &7colourful.'
+    armor_disabled: '&7Your armor is &cno longer &7colourful.'
+    armor_sameColour: true
+    world_disabled: '&cCommand disabled in this world.'
+disabled_worlds:
+    - pvp

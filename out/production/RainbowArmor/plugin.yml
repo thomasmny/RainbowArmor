@@ -1,6 +1,6 @@
 name: RainbowArmor
 main: de.eintosti.rainbowarmor.RainbowArmor
-version: 2.0
+version: 2.1
 author: einTosti
 
 commands:
@@ -11,6 +11,6 @@ commands:
 
 permissions:
     rainbowArmor.use:
-        default: true
+        default: OP
     rainbowArmor.reloadConfig:
         default: OP

@@ -44,11 +44,16 @@ public class RainbowArmorCommand implements CommandExecutor {
                         return true;
                     }
                     plugin.reloadConfig();
-                    plugin.loadMessages();
+                    plugin.loadConfigSettings();
                     player.sendMessage(plugin.getConfigReloaded());
                 }
                 break;
             default:
+                if (plugin.getDisabledWorlds().stream().anyMatch(s -> s.equalsIgnoreCase(player.getWorld().getName()))) {
+                    player.sendMessage(plugin.getWorldDisabled());
+                    return true;
+                }
+
                 if (!plugin.enabledPlayers.contains(player.getUniqueId())) {
                     plugin.enabledPlayers.add(player.getUniqueId());
                     plugin.playerArmor.put(player.getUniqueId(), player.getEquipment().getArmorContents());
