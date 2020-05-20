@@ -115,6 +115,7 @@ public class RainbowArmorManager {
     }
 
     private void setArmorPieceColour(ItemMeta armorMeta, Color armorColour, ItemStack armorSlot) {
+        if (armorSlot == null) return;
         ((LeatherArmorMeta) armorMeta).setColor(armorColour);
         armorSlot.setItemMeta(armorMeta);
     }
