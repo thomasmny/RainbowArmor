@@ -9,10 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.logging.Level;
 
@@ -63,10 +60,10 @@ public class RainbowArmorCommand implements CommandExecutor {
 
                 PlayerInventory playerInventory = player.getInventory();
 
-                playerInventory.setHelmet(getItemStack(Material.LEATHER_HELMET));
-                playerInventory.setChestplate(getItemStack(Material.LEATHER_CHESTPLATE));
-                playerInventory.setLeggings(getItemStack(Material.LEATHER_LEGGINGS));
-                playerInventory.setBoots(getItemStack(Material.LEATHER_BOOTS));
+                playerInventory.setHelmet(rainbowArmorManager.getItemStack(Material.LEATHER_HELMET));
+                playerInventory.setChestplate(rainbowArmorManager.getItemStack(Material.LEATHER_CHESTPLATE));
+                playerInventory.setLeggings(rainbowArmorManager.getItemStack(Material.LEATHER_LEGGINGS));
+                playerInventory.setBoots(rainbowArmorManager.getItemStack(Material.LEATHER_BOOTS));
 
                 rainbowArmorManager.startArmorColouring(player);
                 player.sendMessage(plugin.getArmorEnabled());
@@ -78,16 +75,5 @@ public class RainbowArmorCommand implements CommandExecutor {
             }
         }
         return true;
-    }
-
-    private ItemStack getItemStack(Material material) {
-        ItemStack itemStack = new ItemStack(material, 1, (byte) 0);
-        ItemMeta itemMeta = itemStack.getItemMeta();
-
-        itemMeta.setDisplayName("§4R§ca§6i§en§ab§2o§bw§3A§9r§5m§do§fr");
-        itemMeta.addItemFlags(ItemFlag.values());
-
-        itemStack.setItemMeta(itemMeta);
-        return itemStack;
     }
 }
