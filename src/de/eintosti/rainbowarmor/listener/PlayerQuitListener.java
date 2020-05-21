@@ -10,11 +10,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 /**
  * @author einTosti
  */
-public class PlayerQuit implements Listener {
-    private RainbowArmor plugin;
-    private RainbowArmorManager rainbowArmorManager;
+public class PlayerQuitListener implements Listener {
+    private final RainbowArmor plugin;
+    private final RainbowArmorManager rainbowArmorManager;
 
-    public PlayerQuit(RainbowArmor plugin) {
+    public PlayerQuitListener(RainbowArmor plugin) {
         this.plugin = plugin;
         this.rainbowArmorManager = plugin.getRainbowArmorManager();
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -23,8 +23,7 @@ public class PlayerQuit implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        if (plugin.enabledPlayers.contains(player.getUniqueId()))
-            plugin.enabledPlayers.remove(player.getUniqueId());
+        plugin.enabledPlayers.remove(player.getUniqueId());
         if (plugin.playerArmor.containsKey(player.getUniqueId())) {
             rainbowArmorManager.removeColourArmor(player);
             rainbowArmorManager.resetPlayerArmor(player);

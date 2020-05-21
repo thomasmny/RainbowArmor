@@ -11,7 +11,6 @@ messages:
     config_reloaded: '&7The config was reloaded.'
     armor_enabled: '&7Your armor is &anow &7colourful.'
     armor_disabled: '&7Your armor is &cno longer &7colourful.'
-    armor_sameColour: true
     world_disabled: '&cCommand disabled in this world.'
 disabled_worlds:
     - pvp

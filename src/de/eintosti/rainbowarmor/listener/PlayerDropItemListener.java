@@ -11,10 +11,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 /**
  * @author einTosti
  */
-public class PlayerDropItem implements Listener {
-    private RainbowArmor plugin;
+public class PlayerDropItemListener implements Listener {
+    private final RainbowArmor plugin;
 
-    public PlayerDropItem(RainbowArmor plugin) {
+    public PlayerDropItemListener(RainbowArmor plugin) {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
@@ -22,13 +22,14 @@ public class PlayerDropItem implements Listener {
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        if (plugin.enabledPlayers.contains(player.getUniqueId())) {
-            ItemStack itemStack = event.getItemDrop().getItemStack();
-            ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!plugin.enabledPlayers.contains(player.getUniqueId())) return;
 
-            if (itemMeta.hasDisplayName()) {
-                if (itemMeta.getDisplayName().equals("§4R§ca§6i§en§ab§2o§bw§3A§9r§5m§do§fr"))
-                    event.setCancelled(true);
+        ItemStack itemStack = event.getItemDrop().getItemStack();
+        ItemMeta itemMeta = itemStack.getItemMeta();
+
+        if (itemMeta.hasDisplayName()) {
+            if (itemMeta.getDisplayName().equals("§4R§ca§6i§en§ab§2o§bw§3A§9r§5m§do§fr")) {
+                event.setCancelled(true);
             }
         }
     }

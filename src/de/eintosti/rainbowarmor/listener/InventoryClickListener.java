@@ -10,10 +10,10 @@ import org.bukkit.event.inventory.InventoryType;
 /**
  * @author einTosti
  */
-public class InventoryClick implements Listener {
-    private RainbowArmor plugin;
+public class InventoryClickListener implements Listener {
+    private final RainbowArmor plugin;
 
-    public InventoryClick(RainbowArmor plugin) {
+    public InventoryClickListener(RainbowArmor plugin) {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
@@ -22,8 +22,9 @@ public class InventoryClick implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         if (plugin.enabledPlayers.contains(player.getUniqueId())) {
-            if (event.getSlotType().equals(InventoryType.SlotType.ARMOR))
+            if (event.getSlotType().equals(InventoryType.SlotType.ARMOR)) {
                 event.setCancelled(true);
+            }
         }
     }
 }

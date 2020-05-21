@@ -3,71 +3,74 @@ package de.eintosti.rainbowarmor.manager;
 import de.eintosti.rainbowarmor.RainbowArmor;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.scheduler.BukkitTask;
-
-import java.util.Arrays;
-import java.util.Random;
 
 /**
  * @author einTosti
  */
 public class RainbowArmorManager {
-    private RainbowArmor plugin;
+    private final RainbowArmor plugin;
 
-    private Random randonNumber = new Random();
-    private int taskId;
-    private final BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-
-    public boolean[] colourfulArmor = new boolean[4];
+    private int r = 255;
+    private int g = 0;
+    private int b = 0;
 
     public RainbowArmorManager(RainbowArmor plugin) {
         this.plugin = plugin;
     }
 
-    private Color randomColor() {
-        return Color.fromRGB(this.randonNumber.nextInt(255), this.randonNumber.nextInt(255), this.randonNumber.nextInt(255));
+    public void startArmorColouring(Player player) {
+        PlayerInventory playerInventory = player.getInventory();
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+            if (plugin.enabledPlayers.contains(player.getUniqueId())) {
+                Color color = nextColor();
+
+                dyeArmor(playerInventory.getHelmet(), color);
+                dyeArmor(playerInventory.getChestplate(), color);
+                dyeArmor(playerInventory.getLeggings(), color);
+                dyeArmor(playerInventory.getBoots(), color);
+            }
+        }, 0L, 1L);
     }
 
-    public void wearColourArmor(PlayerInteractEvent event, Material colorArmor) {
-        Player player = event.getPlayer();
-        PlayerInventory playerInv = player.getInventory();
+    public Color nextColor() {
+        nextRGB();
+        return Color.fromRGB(r, g, b);
+    }
 
-        BukkitTask scheduledTask = this.scheduler.runTaskTimerAsynchronously(plugin, () -> {
-            ItemStack playerArmorSlot = null;
+    private void nextRGB() {
+        if (r == 255 && g < 255 && b == 0) {
+            g += 1;
+        }
+        if (g == 255 && r > 0 && b == 0) {
+            r -= 1;
+        }
+        if (g == 255 && b < 255 && r == 0) {
+            b += 1;
+        }
+        if (b == 255 && g > 0 && r == 0) {
+            g -= 1;
+        }
+        if (b == 255 && r < 255 && g == 0) {
+            r += 1;
+        }
+        if (r == 255 && b > 0 && g == 0) {
+            b -= 1;
+        }
+    }
 
-            switch (colorArmor) {
-                case LEATHER_HELMET:
-                    playerArmorSlot = playerInv.getHelmet();
-                    break;
-                case LEATHER_CHESTPLATE:
-                    playerArmorSlot = playerInv.getChestplate();
-                    break;
-                case LEATHER_LEGGINGS:
-                    playerArmorSlot = playerInv.getLeggings();
-                    break;
-                case LEATHER_BOOTS:
-                    playerArmorSlot = playerInv.getBoots();
-                    break;
-            }
+    private void dyeArmor(ItemStack itemStack, Color color) {
+        if (itemStack == null) return;
 
-            if (playerArmorSlot != null) {
-                ItemMeta armorMeta = playerArmorSlot.getItemMeta();
-                if (armorMeta instanceof LeatherArmorMeta) {
-                    ((LeatherArmorMeta) armorMeta).setColor(randomColor());
-                    playerArmorSlot.setItemMeta(armorMeta);
-                }
-            }
-        }, 5L, 5L);
-        this.taskId = scheduledTask.getTaskId();
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof LeatherArmorMeta)) return;
+
+        ((LeatherArmorMeta) itemMeta).setColor(color);
+        itemStack.setItemMeta(itemMeta);
     }
 
     public void removeColourArmor(Player player) {
@@ -80,62 +83,5 @@ public class RainbowArmorManager {
 
     public void resetPlayerArmor(Player player) {
         player.getInventory().setArmorContents(plugin.playerArmor.get(player.getUniqueId()));
-    }
-
-    public void startArmorColouring(Player player) {
-        Boolean oneColour = plugin.getOneColour();
-        PlayerInventory playerInv = player.getInventory();
-
-        playerInv.setHelmet(getItemStack(Material.LEATHER_HELMET));
-        playerInv.setChestplate(getItemStack(Material.LEATHER_CHESTPLATE));
-        playerInv.setLeggings(getItemStack(Material.LEATHER_LEGGINGS));
-        playerInv.setBoots(getItemStack(Material.LEATHER_BOOTS));
-
-        ItemMeta helmetMeta = playerInv.getHelmet().getItemMeta();
-        ItemMeta chestplateMeta = playerInv.getHelmet().getItemMeta();
-        ItemMeta leggingsMeta = playerInv.getHelmet().getItemMeta();
-        ItemMeta bootsMeta = playerInv.getHelmet().getItemMeta();
-
-        Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> {
-            if (plugin.enabledPlayers.contains(player.getUniqueId())) {
-                if (oneColour) {
-                    Color armorColour = randomColor();
-                    setArmorPieceColour(helmetMeta, armorColour, playerInv.getHelmet());
-                    setArmorPieceColour(chestplateMeta, armorColour, playerInv.getChestplate());
-                    setArmorPieceColour(leggingsMeta, armorColour, playerInv.getLeggings());
-                    setArmorPieceColour(bootsMeta, armorColour, playerInv.getBoots());
-                } else {
-                    setArmorPieceColour(helmetMeta, randomColor(), playerInv.getHelmet());
-                    setArmorPieceColour(chestplateMeta, randomColor(), playerInv.getChestplate());
-                    setArmorPieceColour(leggingsMeta, randomColor(), playerInv.getLeggings());
-                    setArmorPieceColour(bootsMeta, randomColor(), playerInv.getBoots());
-                }
-            }
-        }, 0L, 10L);
-    }
-
-    private void setArmorPieceColour(ItemMeta armorMeta, Color armorColour, ItemStack armorSlot) {
-        if (armorSlot == null) return;
-        ((LeatherArmorMeta) armorMeta).setColor(armorColour);
-        armorSlot.setItemMeta(armorMeta);
-    }
-
-    public void stopArmorColouring() {
-        this.scheduler.cancelTask(this.taskId);
-        this.colourfulArmor[0] = false;
-        this.colourfulArmor[1] = false;
-        this.colourfulArmor[2] = false;
-        this.colourfulArmor[3] = false;
-    }
-
-    private ItemStack getItemStack(Material material) {
-        ItemStack itemStack = new ItemStack(material, 1, (byte) 0);
-        ItemMeta itemMeta = itemStack.getItemMeta();
-
-        itemMeta.setDisplayName("§4R§ca§6i§en§ab§2o§bw§3A§9r§5m§do§fr");
-        itemMeta.addItemFlags(ItemFlag.values());
-
-        itemStack.setItemMeta(itemMeta);
-        return itemStack;
     }
 }

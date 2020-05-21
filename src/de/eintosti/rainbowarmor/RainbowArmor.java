@@ -1,7 +1,10 @@
 package de.eintosti.rainbowarmor;
 
 import de.eintosti.rainbowarmor.command.RainbowArmorCommand;
-import de.eintosti.rainbowarmor.listener.*;
+import de.eintosti.rainbowarmor.listener.InventoryClickListener;
+import de.eintosti.rainbowarmor.listener.PlayerChangedWorldListener;
+import de.eintosti.rainbowarmor.listener.PlayerDropItemListener;
+import de.eintosti.rainbowarmor.listener.PlayerQuitListener;
 import de.eintosti.rainbowarmor.manager.RainbowArmorManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -23,7 +26,6 @@ public class RainbowArmor extends JavaPlugin {
     private String prefix;
     private String noPermission;
     private String worldDisabled;
-    private Boolean oneColour;
     private List<String> disabledWorlds;
 
     public ArrayList<UUID> enabledPlayers = new ArrayList<>();
@@ -64,11 +66,11 @@ public class RainbowArmor extends JavaPlugin {
     }
 
     private void registerListeners() {
-        new InventoryClick(this);
-        new PlayerChangedWorld(this);
-        new PlayerDropItem(this);
-        new PlayerInteract(this);
-        new PlayerQuit(this);
+        new InventoryClickListener(this);
+        new PlayerChangedWorldListener(this);
+        new PlayerDropItemListener(this);
+        new PlayerInteractListener(this);
+        new PlayerQuitListener(this);
     }
 
     public void loadConfigSettings() {
@@ -78,7 +80,6 @@ public class RainbowArmor extends JavaPlugin {
         this.prefix = this.getConfig().isString("messages.prefix") ? this.getConfig().getString("messages.prefix").replace("&", "§") : "§7● §4R§ca§6i§en§ab§2o§bw§3A§9r§5m§do§fr §8» ";
         this.noPermission = this.getConfig().isString("messages.no_permissions") ? this.getConfig().getString("messages.no_permissions").replace("&", "§") : "§7No permissions!";
         this.worldDisabled = this.getConfig().isString("messages.world_disabled") ? this.getConfig().getString("messages.world_disabled").replace("&", "§") : "§cCommand disabled in this world.";
-        this.oneColour = !this.getConfig().isBoolean("messages.armor_sameColour") || this.getConfig().getBoolean("messages.armor_sameColour");
         this.disabledWorlds = this.getConfig().isList("disabled_worlds") ? this.getConfig().getStringList("disabled_worlds") : new ArrayList<>();
     }
 
@@ -100,10 +101,6 @@ public class RainbowArmor extends JavaPlugin {
 
     public String getWorldDisabled() {
         return this.prefix + this.worldDisabled;
-    }
-
-    public Boolean getOneColour() {
-        return this.oneColour;
     }
 
     public List<String> getDisabledWorlds() {
