@@ -17,20 +17,22 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 public class RainbowArmorManager {
     private final RainbowArmor plugin;
 
-    private int r = 255;
-    private int g = 0;
-    private int b = 0;
+    private int r = 255, g = 0, b = 0;
+
+    private int posRed, negRed;
+    private int posGreen, negGreen;
+    private int posBlue, negBlue;
 
     public RainbowArmorManager(RainbowArmor plugin) {
         this.plugin = plugin;
     }
 
     public void startArmorColouring(Player player) {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             if (plugin.enabledPlayers.contains(player.getUniqueId())) {
                 nextColor(player);
             }
-        }, 0L, 1L);
+        }, 1L, 1L);
     }
 
     public void nextColor(Player player) {
@@ -44,24 +46,36 @@ public class RainbowArmorManager {
     }
 
     private Color nextRGB() {
-        if (r == 255 && g < 255 && b == 0) {
-            g += 15;
+        int increment = 15;
+        int max = 255 / increment;
+
+        if (posGreen <= max) {
+            ++this.posGreen;
+            this.g = (posGreen - 1) * increment;
+        } else if (negRed <= max) {
+            this.negRed++;
+            this.r = 255 - increment * (negRed - 1);
+        } else if (posBlue <= max) {
+            ++this.posBlue;
+            this.b = (posBlue - 1) * increment;
+        } else if (negGreen <= max) {
+            ++this.negGreen;
+            this.g = 255 - increment * (negGreen - 1);
+        } else if (posRed <= max) {
+            ++this.posRed;
+            this.r = (posRed - 1) * increment;
+        } else if (negBlue <= max) {
+            ++this.negBlue;
+            this.b = 255 - increment * (negBlue - 1);
+        } else {
+            this.posRed = 0;
+            this.negRed = 0;
+            this.posGreen = 0;
+            this.negGreen = 0;
+            this.posBlue = 0;
+            this.negBlue = 0;
         }
-        if (g == 255 && r > 0 && b == 0) {
-            r -= 15;
-        }
-        if (g == 255 && b < 255 && r == 0) {
-            b += 15;
-        }
-        if (b == 255 && g > 0 && r == 0) {
-            g -= 15;
-        }
-        if (b == 255 && r < 255 && g == 0) {
-            r += 15;
-        }
-        if (r == 255 && b > 0 && g == 0) {
-            b -= 15;
-        }
+
         return Color.fromRGB(r, g, b);
     }
 
