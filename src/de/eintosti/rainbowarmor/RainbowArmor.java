@@ -69,7 +69,6 @@ public class RainbowArmor extends JavaPlugin {
         new InventoryClickListener(this);
         new PlayerChangedWorldListener(this);
         new PlayerDropItemListener(this);
-        new PlayerInteractListener(this);
         new PlayerQuitListener(this);
     }
 
